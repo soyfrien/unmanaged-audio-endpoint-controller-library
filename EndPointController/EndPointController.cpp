@@ -9,19 +9,35 @@
 #include "Propidl.h"
 #include "Functiondiscoverykeys_devpkey.h"
 
-HRESULT SetDefaultAudioPlaybackDevice(LPCWSTR devID)
+// To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs
+void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int kernelAsInteger)
 {	
-	IPolicyConfigVista *pPolicyConfig;
 	ERole reserved = eConsole;
-
-    HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient), 
-		NULL, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID *)&pPolicyConfig);
-	if (SUCCEEDED(hr))
+	
+	if (kernelAsInteger != 0)
 	{
-		hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
-		pPolicyConfig->Release();
+		IPolicyConfig *pPolicyConfig;
+		
+		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), 
+		NULL, CLSCTX_ALL, __uuidof(IPolicyConfig, (LPVOID *)&pPolicyConfig);
+		if (SUCCEEDED(hr))
+		{
+			hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
+			pPolicyConfig->Release();
+		}
 	}
-	return hr;
+	else if (kernelAsInteger == 0)
+	{
+		IPolicyConfigVista *pPolicyConfig;
+		
+		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient), 
+		NULL, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID *)&pPolicyConfig);
+		if (SUCCEEDED(hr))
+		{
+			hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
+			pPolicyConfig->Release();
+		}
+	}
 }
 
 // EndPointController.exe [NewDefaultDeviceID]
