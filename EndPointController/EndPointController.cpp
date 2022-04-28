@@ -18,7 +18,7 @@ using namespace std;
 
 class CoreAudioController
 {
-	// To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs
+	// To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs to pass a number for NTx
 	void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int NTx)
 	{
 		ERole reserved = eConsole;

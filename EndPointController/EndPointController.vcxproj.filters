@@ -23,8 +23,5 @@
     <ClInclude Include="IPolicyConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EndPointController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
