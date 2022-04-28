@@ -78,6 +78,8 @@ build/
 *.log
 *.scc
 
+.gitignore
+
 # Visual C++ cache files
 ipch/
 *.aps
@@ -215,3 +217,4 @@ pip-log.txt
 .mr.developer.cfg
 /.vs/EndPointController/FileContentIndex
 /.vs/EndPointController/v17/Preview
+/.vs
