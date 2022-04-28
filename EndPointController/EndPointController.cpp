@@ -18,7 +18,6 @@ using namespace std;
 
 class CoreAudioController
 {
-
 	// To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs
 	void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int NTx)
 	{
@@ -99,6 +98,29 @@ class CoreAudioController
 		}
 	}
 
+	DllExport INT CountAudioPlaybackDevices()
+	{
+		UINT count = 0;
+		IMMDeviceEnumerator* pEnum = NULL;
+
+		HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnum);
+		if (SUCCEEDED(hr))
+		{
+			IMMDeviceCollection* pDevices;
+			hr = pEnum->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &pDevices);
+
+			if (SUCCEEDED(hr))
+			{
+				hr = pDevices->GetCount(&count);
+				pDevices->Release();
+			}
+
+			pEnum->Release();
+		}
+
+		return count;
+	}
+
 	DllExport BSTR GetEndpointName(int deviceID)
 	{
 		BSTR bstrFriendlyName = NULL;
@@ -158,5 +180,4 @@ class CoreAudioController
 
 		return bstrFriendlyName;
 	};
-
 };
