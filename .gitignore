@@ -213,3 +213,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/.vs/EndPointController/FileContentIndex
+/.vs/EndPointController/v17/Preview

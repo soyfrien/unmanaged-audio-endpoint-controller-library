@@ -5,37 +5,33 @@
 #include <tchar.h>
 #include "windows.h"
 #include "Mmdeviceapi.h"
-#include "PolicyConfig.h"
+#include "IPolicyConfig.h"
 #include "Propidl.h"
 #include "Functiondiscoverykeys_devpkey.h"
 
 // To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs
-void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int kernelAsInteger)
-{	
+void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int NTx)
+{
 	ERole reserved = eConsole;
-	
-	if (kernelAsInteger != 0)
+
+	if (NTx != 0)
 	{
-		IPolicyConfig *pPolicyConfig;
-		
-		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), 
-		NULL, CLSCTX_ALL, __uuidof(IPolicyConfig, (LPVOID *)&pPolicyConfig);
+		IPolicyConfig* pPolicyConfig;
+		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfig), (LPVOID*)&pPolicyConfig);
 		if (SUCCEEDED(hr))
 		{
 			hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
 			pPolicyConfig->Release();
 		}
 	}
-	else if (kernelAsInteger == 0)
+	else if (NTx == 0)
 	{
-		IPolicyConfigVista *pPolicyConfig;
-		
-		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient), 
-		NULL, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID *)&pPolicyConfig);
+		IPolicyConfigVista* pPolicyConfigVista;
+		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfig), (LPVOID*)&pPolicyConfigVista);
 		if (SUCCEEDED(hr))
 		{
-			hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
-			pPolicyConfig->Release();
+			hr = pPolicyConfigVista->SetDefaultEndpoint(devID, reserved);
+			pPolicyConfigVista->Release();
 		}
 	}
 }
