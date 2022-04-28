@@ -9,50 +9,52 @@
 #include "Propidl.h"
 #include "Functiondiscoverykeys_devpkey.h"
 
-// To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs
-void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int NTx)
-{
-	ERole reserved = eConsole;
+#include <SDKDDKVer.h>
 
-	if (NTx != 0)
+#pragma once
+#define DllExport   __declspec( dllexport )
+
+using namespace std;
+
+class CoreAudioController
+{
+
+	// To be called from C# project with https://github.com/ppdac/Helpers.WinNT/blob/main/KernelNames.cs
+	void SetDefaultAudioPlaybackDevice(LPCWSTR devID, int NTx)
 	{
-		IPolicyConfig* pPolicyConfig;
-		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfig), (LPVOID*)&pPolicyConfig);
-		if (SUCCEEDED(hr))
+		ERole reserved = eConsole;
+
+		if (NTx != 0)
 		{
-			hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
-			pPolicyConfig->Release();
+			IPolicyConfig* pPolicyConfig;
+			HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfig), (LPVOID*)&pPolicyConfig);
+			if (SUCCEEDED(hr))
+			{
+				hr = pPolicyConfig->SetDefaultEndpoint(devID, reserved);
+				pPolicyConfig->Release();
+			}
+		}
+		else if (NTx == 0)
+		{
+			IPolicyConfigVista* pPolicyConfigVista;
+			HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfig), (LPVOID*)&pPolicyConfigVista);
+			if (SUCCEEDED(hr))
+			{
+				hr = pPolicyConfigVista->SetDefaultEndpoint(devID, reserved);
+				pPolicyConfigVista->Release();
+			}
 		}
 	}
-	else if (NTx == 0)
-	{
-		IPolicyConfigVista* pPolicyConfigVista;
-		HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfig), (LPVOID*)&pPolicyConfigVista);
-		if (SUCCEEDED(hr))
-		{
-			hr = pPolicyConfigVista->SetDefaultEndpoint(devID, reserved);
-			pPolicyConfigVista->Release();
-		}
-	}
-}
 
-// EndPointController.exe [NewDefaultDeviceID]
-int _tmain(int argc, _TCHAR* argv[])
-{
-	// read the command line option, -1 indicates list devices.
-	int option = -1;
-	if (argc == 2) option = atoi((char*)argv[1]);
-
-	HRESULT hr = CoInitialize(NULL);
-	if (SUCCEEDED(hr))
+	DllExport BSTR GetEndpointName(int deviceID)
 	{
-		IMMDeviceEnumerator *pEnum = NULL;
+		BSTR bstrFriendlyName = NULL;
+		IMMDeviceEnumerator* pEnum = NULL;
 		// Create a multimedia device enumerator.
-		hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL,
-			CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnum);
+		HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnum);
 		if (SUCCEEDED(hr))
 		{
-			IMMDeviceCollection *pDevices;
+			IMMDeviceCollection* pDevices;
 			// Enumerate the output devices.
 			hr = pEnum->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &pDevices);
 			if (SUCCEEDED(hr))
@@ -61,9 +63,9 @@ int _tmain(int argc, _TCHAR* argv[])
 				pDevices->GetCount(&count);
 				if (SUCCEEDED(hr))
 				{
-					for (int i = 0; i < count; i++)
+					for (UINT i = 0; i < count; i++)
 					{
-						IMMDevice *pDevice;
+						IMMDevice* pDevice;
 						hr = pDevices->Item(i, &pDevice);
 						if (SUCCEEDED(hr))
 						{
@@ -71,7 +73,7 @@ int _tmain(int argc, _TCHAR* argv[])
 							hr = pDevice->GetId(&wstrID);
 							if (SUCCEEDED(hr))
 							{
-								IPropertyStore *pStore;
+								IPropertyStore* pStore;
 								hr = pDevice->OpenPropertyStore(STGM_READ, &pStore);
 								if (SUCCEEDED(hr))
 								{
@@ -80,10 +82,13 @@ int _tmain(int argc, _TCHAR* argv[])
 									hr = pStore->GetValue(PKEY_Device_FriendlyName, &friendlyName);
 									if (SUCCEEDED(hr))
 									{
-										// if no options, print the device
-										// otherwise, find the selected device and set it to be default
-										if (option == -1) printf("Audio Device %d: %ws\n",i, friendlyName.pwszVal);
-										if (i == option) SetDefaultAudioPlaybackDevice(wstrID);
+										if (i == deviceID)
+										{
+											BSTR pBstr = SysAllocString(friendlyName.pwszVal);
+											bstrFriendlyName = pBstr;
+											SysFreeString(pBstr);
+										}
+
 										PropVariantClear(&friendlyName);
 									}
 									pStore->Release();
@@ -97,6 +102,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			pEnum->Release();
 		}
-	}
-	return hr;
-}
+
+		return bstrFriendlyName;
+	};
+
+};
