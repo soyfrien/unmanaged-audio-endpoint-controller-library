@@ -46,6 +46,59 @@ class CoreAudioController
 		}
 	}
 
+	DllExport void CommitEndpoint(INT deviceID, int NTx)
+	{
+		IMMDeviceEnumerator* pEnum = NULL;
+		// Create a multimedia device enumerator.
+		HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnum);
+		if (SUCCEEDED(hr))
+		{
+			IMMDeviceCollection* pDevices;
+			// Enumerate the output devices.
+			hr = pEnum->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &pDevices);
+			if (SUCCEEDED(hr))
+			{
+				UINT count;
+				pDevices->GetCount(&count);
+				if (SUCCEEDED(hr))
+				{
+					for (UINT i = 0; i < count; i++)
+					{
+						IMMDevice* pDevice;
+						hr = pDevices->Item(i, &pDevice);
+						if (SUCCEEDED(hr))
+						{
+							LPWSTR wstrID = NULL;
+							hr = pDevice->GetId(&wstrID);
+							if (SUCCEEDED(hr))
+							{
+								IPropertyStore* pStore;
+								hr = pDevice->OpenPropertyStore(STGM_READ, &pStore);
+								if (SUCCEEDED(hr))
+								{
+									PROPVARIANT friendlyName;
+									PropVariantInit(&friendlyName);
+									hr = pStore->GetValue(PKEY_Device_FriendlyName, &friendlyName);
+									if (SUCCEEDED(hr))
+									{
+										if (i == deviceID)
+											SetDefaultAudioPlaybackDevice(wstrID, NTx);
+
+										PropVariantClear(&friendlyName);
+									}
+									pStore->Release();
+								}
+							}
+							pDevice->Release();
+						}
+					}
+				}
+				pDevices->Release();
+			}
+			pEnum->Release();
+		}
+	}
+
 	DllExport BSTR GetEndpointName(int deviceID)
 	{
 		BSTR bstrFriendlyName = NULL;
