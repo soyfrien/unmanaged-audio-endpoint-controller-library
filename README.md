@@ -1,5 +1,5 @@
-# unmanaged-audio-endpoint-controller-library
-Unmanaged Windows Audio Endpoint Controller Library
+#  Unmanaged Windows Audio Endpoint Controller Library
+See `PolicyConfig.h` and the endpoint controller here: https://github.com/davuxcom/audio-endpoint-controller.
 
 # Entrypoints implemented
 ```
