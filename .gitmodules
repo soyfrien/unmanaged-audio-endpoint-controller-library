@@ -1,3 +1,6 @@
 [submodule "EndPointController/headers"]
 	path = EndPointController/headers
 	url = https://github.com/soyfrien/IPolicyConfig.h.git
+[submodule "EndPointController/helpers"]
+	path = EndPointController/helpers
+	url = https://github.com/ppdac/Helpers.WinNT.git
