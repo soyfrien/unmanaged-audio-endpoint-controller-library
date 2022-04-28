@@ -1,11 +1,11 @@
-// EndPointController.cpp : Defines the entry point for the console application.
+// EndPointController.cpp : Library implementation of IPolicyConfig.h.
 //
 #include <stdio.h>
 #include <wchar.h>
 #include <tchar.h>
 #include "windows.h"
 #include "Mmdeviceapi.h"
-#include "IPolicyConfig.h"
+#include "headers/IPolicyConfig.h"
 #include "Propidl.h"
 #include "Functiondiscoverykeys_devpkey.h"
 

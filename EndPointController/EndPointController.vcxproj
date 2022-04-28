@@ -81,10 +81,10 @@
     <ClCompile Include="EndPointController.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IPolicyConfig.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
+    <ClInclude Include="headers\IPolicyConfig.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
