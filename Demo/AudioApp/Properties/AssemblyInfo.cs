@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AudioEndPointController")]
-[assembly: AssemblyDescription("Wrapper of IPolicyConfig as .NET Library")]
+[assembly: AssemblyTitle("AudioApp")]
+[assembly: AssemblyDescription("Illustration of library usage")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("PPDAC, Ltd.")]
-[assembly: AssemblyProduct("AudioEndPointController")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("AudioApp")]
 [assembly: AssemblyCopyright("Copyright ©2022")]
-[assembly: AssemblyTrademark("PPDAC, Ltd.")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d5946e22-d7ef-4025-9e7c-25a5e9d9c3c5")]
+[assembly: Guid("ef2b7e72-7c3b-4629-a3e7-1bef017cf22b")]
 
 // Version information for an assembly consists of the following four values:
 //

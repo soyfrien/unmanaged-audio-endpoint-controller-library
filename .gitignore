@@ -9,3 +9,5 @@
 /Debug
 /Demo/AudioEndPointController/bin/Debug
 /Demo/AudioEndPointController/obj
+/Demo/AudioApp/bin/Release
+/Demo/AudioApp/obj/Release
