@@ -1,5 +1,6 @@
 #  Unmanaged Windows Audio Endpoint Controller Library
-Learned from `PolicyConfig.h` and the endpoint controller here: https://github.com/davuxcom/audio-endpoint-controller. (But this is more interesting: https://github.com/File-New-Project/EarTrumpet/tree/master/EarTrumpet/Interop...)
+ - Learned from `PolicyConfig.h` and the endpoint controller here: https://github.com/davuxcom/audio-endpoint-controller. (But this is more interesting: https://github.com/File-New-Project/EarTrumpet/tree/master/EarTrumpet/Interop...)
+ - Demo uses wraps it into a .NET library  
 
 # Entrypoints implemented
 ```
